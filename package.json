@@ -1,6 +1,6 @@
 {
-  "name": "postgres-prisma",
-  "repository": "https://github.com/vercel/examples.git",
+  "name": "price-is-precise",
+  "repository": "https://github.com/coltonb/price-is-precise.git",
   "license": "MIT",
   "version": "0.0.0",
   "private": true,
