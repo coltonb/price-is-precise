@@ -1,15 +1,14 @@
 "use client";
 
-import { teams, users } from "@prisma/client";
-import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
+import { Team, User } from "@prisma/client";
 import { useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
 
 interface TeamProps {
-  team: teams & { users: users[] };
-  onDelete: (team: teams) => any;
+  team: Team & { users: User[] };
+  onDelete: (team: Team) => any;
 }
 
 export default function Team(props: TeamProps) {
@@ -44,7 +43,7 @@ export default function Team(props: TeamProps) {
             <span>{props.team.name}</span>
             <CopyToClipboardButton
               className="pl-1"
-              value="AAAAA"
+              value={props.team.code.toUpperCase()}
               tooltipText="Copy Team Code"
             />
           </span>

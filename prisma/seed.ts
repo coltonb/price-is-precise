@@ -5,7 +5,7 @@ async function main() {
 
   const teams = await Promise.all(
     teamNames.map((team) =>
-      prisma.teams.upsert({
+      prisma.team.upsert({
         where: { name: team },
         update: {},
         create: { name: team, score: 999 },
@@ -25,7 +25,7 @@ async function main() {
 
   await Promise.all(
     users.map((user) =>
-      prisma.users.upsert({
+      prisma.user.upsert({
         where: { name_teamId: { name: user.name, teamId: user.teamId } },
         update: {},
         create: {

@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["jsonProtocol"]
+  previewFeatures = ["jsonProtocol", "postgresqlExtensions"]
 }
 
 datasource db {
@@ -11,20 +11,25 @@ datasource db {
   url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+  extensions        = [citext]
 }
 
-model users {
+model User {
   id     Int    @id @default(autoincrement())
   name   String
   teamId Int
-  team   teams  @relation(fields: [teamId], references: [id])
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([name, teamId])
+  @@map("users")
 }
 
-model teams {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  score Int     @default(0)
-  users users[]
+model Team {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  score Int    @default(0)
+  code  String @unique @default(dbgenerated("substring(md5(random()::text), 0, 6)")) @db.Citext
+  users User[]
+
+  @@map("teams")
 }
