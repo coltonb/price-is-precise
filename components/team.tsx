@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
+import Api from "@/lib/clientApi";
+import { z } from "zod";
 
 interface TeamProps {
   team: Team & { users: User[] };
@@ -16,11 +18,12 @@ export default function Team(props: TeamProps) {
   const [debouncedScore, setDebouncedScore] = useState(props.team.score);
 
   useDebounce(
-    () => {
+    async () => {
       if (score == debouncedScore) {
         return;
       }
 
+      await Api.updateTeam(props.team.id, { score: score });
       setDebouncedScore(score);
     },
     1500,
@@ -33,49 +36,67 @@ export default function Team(props: TeamProps) {
     }
   };
 
-  const handleScoreChange = (e: any) => setScore(parseInt(e.target.value) || 0);
+  const handleScoreChange = (e: any) =>
+    setScore(z.coerce.number().catch(score).parse(e.target.value));
 
   return (
-    <div className="card card-compact w-96 shadow-xl">
+    <div className="card card-compact min-w-[28rem] shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
           <span className="flex-1">
             <span>{props.team.name}</span>
             <CopyToClipboardButton
-              className="pl-1"
-              value={props.team.code.toUpperCase()}
+              className="ms-1"
+              value={
+                props.team.name + " team code: " + props.team.code.toUpperCase()
+              }
               tooltipText="Copy Team Code"
             />
           </span>
 
-          <span>
-            Score:
+          <div>
+            <span className="mr-[0.25em]">Score:</span>
             <input
               type="text"
-              maxLength={4}
-              className="pl-1 bg-transparent focus:underline flex-1 focus:outline-none"
-              style={{ width: "4ch" }}
+              maxLength={3}
+              className="bg-transparent focus:underline flex-1 focus:outline-none"
+              style={{ width: "3ch" }}
               value={score}
               onChange={handleScoreChange}
               onKeyDown={handleScoreKeyDown}
             />
-          </span>
+          </div>
+          <button
+            className="btn btn-xs btn-outline btn-success"
+            onClick={() => setScore(Math.min(score + 1, 999))}
+          >
+            +1
+          </button>
+          <button
+            className="btn btn-xs btn-outline btn-error"
+            onClick={() => setScore(Math.max(score - 1, 0))}
+          >
+            -1
+          </button>
 
           <DeleteButton
             tooltipText="Delete Team"
+            className="ms-1"
             onDelete={() => props.onDelete(props.team)}
           />
         </h2>
         <hr />
-        <table className="table table-xs table-zebra">
-          <tbody>
-            {props.team.users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="max-h-32 overflow-x-auto">
+          <table className="table table-xs table-zebra">
+            <tbody>
+              {props.team.users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

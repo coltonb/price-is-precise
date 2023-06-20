@@ -3,7 +3,7 @@
 import TeamComponent from "@/components/team";
 import { Team, User } from "@prisma/client";
 import { useState } from "react";
-import Api from "@/lib/api";
+import Api from "@/lib/clientApi";
 
 interface TeamsProps {
   teams: (Team & { users: User[] })[];
@@ -18,7 +18,7 @@ export default function Teams(props: TeamsProps) {
   };
 
   return (
-    <div className="flex w-full space-x-3">
+    <div className="flex flex-wrap w-full space-x-3">
       {teams.map((team) => {
         return (
           <TeamComponent key={team.id} team={team} onDelete={handleDelete} />
