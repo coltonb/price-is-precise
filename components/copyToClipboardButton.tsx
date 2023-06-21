@@ -31,7 +31,7 @@ export default function CopyToClipboardButton(
       data-tip={copied ? "Copied!" : props.tooltipText ?? "Copy to Clipboard"}
     >
       <button className={props.className ?? ""} onClick={handleClick}>
-        <ClipboardDocumentIcon className="inline w-5" />
+        <ClipboardDocumentIcon className="icon" />
       </button>
     </div>
   );

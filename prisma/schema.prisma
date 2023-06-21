@@ -16,7 +16,7 @@ datasource db {
 
 model User {
   id     Int    @id @default(autoincrement())
-  name   String
+  name   String @db.VarChar(32)
   teamId Int
   team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -32,4 +32,14 @@ model Team {
   users User[]
 
   @@map("teams")
+}
+
+model PriceQuestion {
+  id     Int    @id @default(autoincrement())
+  name   String @unique
+  price  Float
+  points Int[]  @default([3, 2, 1])
+  rank   Int    @unique
+
+  @@map("price_questions")
 }

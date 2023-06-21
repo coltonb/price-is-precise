@@ -40,7 +40,7 @@ export default function Team(props: TeamProps) {
     setScore(z.coerce.number().catch(score).parse(e.target.value));
 
   return (
-    <div className="card card-compact min-w-[28rem] shadow-xl">
+    <div className="card card-compact bg-neutral-focus min-w-[28rem] shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
           <span className="flex-1">
@@ -81,7 +81,7 @@ export default function Team(props: TeamProps) {
 
           <DeleteButton
             tooltipText="Delete Team"
-            className="ms-1"
+            className="mx-1"
             onDelete={() => props.onDelete(props.team)}
           />
         </h2>

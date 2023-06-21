@@ -18,7 +18,7 @@ export default function Teams(props: TeamsProps) {
   };
 
   return (
-    <div className="flex flex-wrap w-full space-x-3">
+    <div className="flex flex-wrap w-full gap-3">
       {teams.map((team) => {
         return (
           <TeamComponent key={team.id} team={team} onDelete={handleDelete} />

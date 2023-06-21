@@ -3,6 +3,7 @@
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useTimeoutFn } from "react-use";
+import IconButton from "./iconButton";
 
 interface DeleteButtonProps {
   className?: string;
@@ -25,18 +26,13 @@ export default function DeleteButton(props: DeleteButtonProps) {
   };
 
   return (
-    <div
-      className="tooltip"
-      data-tip={confirm ? "Are you sure?" : props.tooltipText}
+    <IconButton
+      onClick={handleDelete}
+      onMouseEnter={cancelConfirm}
+      onMouseLeave={resetConfirm}
+      tooltipText={confirm ? "Are you sure?" : props.tooltipText}
     >
-      <button
-        className={props.className ?? ""}
-        onClick={handleDelete}
-        onMouseEnter={cancelConfirm}
-        onMouseLeave={resetConfirm}
-      >
-        <XCircleIcon className="inline w-5" />
-      </button>
-    </div>
+      <XCircleIcon className={"icon " + props.className ?? ""} />
+    </IconButton>
   );
 }

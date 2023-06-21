@@ -1,6 +1,25 @@
 import prisma from "../lib/prisma";
 
 async function main() {
+  const priceQuestions = [
+    { name: "Cheese", price: 120 },
+    { name: "Downed Telephone Pole", price: 499 },
+  ];
+
+  await Promise.all(
+    priceQuestions.map((question, index) =>
+      prisma.priceQuestion.upsert({
+        where: { name: question.name },
+        update: {},
+        create: {
+          name: question.name,
+          price: question.price,
+          rank: index,
+        },
+      })
+    )
+  );
+
   const teamNames = ["Iowa", "Dragon"];
 
   const teams = await Promise.all(
