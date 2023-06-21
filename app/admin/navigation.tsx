@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 
 interface Link {
   href: string;
@@ -9,7 +8,7 @@ interface Link {
 }
 
 export function Navigation() {
-  const links = [
+  const links: Link[] = [
     {
       href: "/admin/teams",
       name: "Teams",
@@ -29,7 +28,7 @@ export function Navigation() {
         const isActive = pathname.startsWith(link.href);
 
         return (
-          <Link
+          <a
             key={link.name}
             href={link.href}
             className={
@@ -37,7 +36,7 @@ export function Navigation() {
             }
           >
             {link.name}
-          </Link>
+          </a>
         );
       })}
     </div>

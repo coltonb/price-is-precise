@@ -12,9 +12,9 @@ interface TeamsProps {
 export default function Teams(props: TeamsProps) {
   const [teams, setTeams] = useState(props.teams);
 
-  const handleDelete = async (teamToDelete: Team) => {
-    await Api.deleteTeam(teamToDelete.id);
+  const handleDelete = (teamToDelete: Team) => {
     setTeams(teams.filter((team) => team.id !== teamToDelete.id));
+    Api.deleteTeam(teamToDelete.id);
   };
 
   return (

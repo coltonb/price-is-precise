@@ -3,6 +3,7 @@ import prisma from "../lib/prisma";
 async function main() {
   const priceQuestions = [
     { name: "Cheese", price: 120 },
+    { name: "Big Rock", price: 1599 },
     { name: "Downed Telephone Pole", price: 499 },
   ];
 
@@ -10,7 +11,7 @@ async function main() {
     priceQuestions.map((question, index) =>
       prisma.priceQuestion.upsert({
         where: { name: question.name },
-        update: {},
+        update: { rank: index },
         create: {
           name: question.name,
           price: question.price,
