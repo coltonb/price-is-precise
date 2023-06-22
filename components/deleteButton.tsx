@@ -2,18 +2,18 @@
 
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { useTimeoutFn } from "react-use";
 import IconButton from "./iconButton";
+import { useDeferredTimeoutFn } from "@/lib/hooks";
 
 interface DeleteButtonProps {
-  className?: string;
   tooltipText: string;
+  className?: string;
   onDelete: () => any;
 }
 
 export default function DeleteButton(props: DeleteButtonProps) {
   const [confirm, setConfirm] = useState(false);
-  const [, cancelConfirm, resetConfirm] = useTimeoutFn(() => {
+  const [, cancelConfirm, resetConfirm] = useDeferredTimeoutFn(() => {
     setConfirm(false);
   }, 500);
 
@@ -31,8 +31,8 @@ export default function DeleteButton(props: DeleteButtonProps) {
       onMouseEnter={cancelConfirm}
       onMouseLeave={resetConfirm}
       tooltipText={confirm ? "Are you sure?" : props.tooltipText}
-    >
-      <XCircleIcon className={"icon " + props.className ?? ""} />
-    </IconButton>
+      className={props.className}
+      icon={XCircleIcon}
+    />
   );
 }

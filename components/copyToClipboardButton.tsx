@@ -2,7 +2,9 @@
 
 import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { useCopyToClipboard, useTimeoutFn } from "react-use";
+import { useCopyToClipboard } from "react-use";
+import IconButton from "./iconButton";
+import { useDeferredTimeoutFn } from "@/lib/hooks";
 
 interface CopyToClipboardButtonProps {
   className?: string;
@@ -14,25 +16,25 @@ export default function CopyToClipboardButton(
   props: CopyToClipboardButtonProps
 ) {
   const [copied, setCopied] = useState(false);
-  const [, , resetCopied] = useTimeoutFn(() => {
+  const [, copyToClipboard] = useCopyToClipboard();
+  const [, , resetCopied] = useDeferredTimeoutFn(() => {
     setCopied(false);
   }, 2000);
-  const [, copyToClipboard] = useCopyToClipboard();
 
   const handleClick = () => {
-    resetCopied();
     setCopied(true);
+    resetCopied();
     copyToClipboard(props.value);
   };
 
   return (
-    <div
-      className="tooltip"
-      data-tip={copied ? "Copied!" : props.tooltipText ?? "Copy to Clipboard"}
-    >
-      <button className={props.className ?? ""} onClick={handleClick}>
-        <ClipboardDocumentIcon className="icon" />
-      </button>
-    </div>
+    <IconButton
+      className={props.className}
+      onClick={handleClick}
+      tooltipText={
+        copied ? "Copied!" : props.tooltipText ?? "Copy to Clipboard"
+      }
+      icon={ClipboardDocumentIcon}
+    />
   );
 }

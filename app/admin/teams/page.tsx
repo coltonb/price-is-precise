@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import Teams from "@/components/teams";
+import Teams from "@/components/admin/teams";
 
 export const dynamic = "force-dynamic";
 

@@ -39,7 +39,7 @@ model PriceQuestion {
   name   String @unique
   price  Float
   points Int[]  @default([3, 2, 1])
-  rank   Int    @unique
+  rank   Int
 
   @@map("price_questions")
 }

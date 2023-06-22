@@ -4,6 +4,6 @@
 
 @layer components {
   .icon {
-    @apply inline w-5;
+    @apply inline w-[20px];
   }
 }

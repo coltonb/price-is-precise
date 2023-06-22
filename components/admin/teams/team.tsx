@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
-import Api from "@/lib/clientApi";
+import ClientApi from "@/lib/clientApi";
 import { z } from "zod";
 
 interface TeamProps {
@@ -18,12 +18,12 @@ export default function Team(props: TeamProps) {
   const [debouncedScore, setDebouncedScore] = useState(props.team.score);
 
   useDebounce(
-    async () => {
+    () => {
       if (score == debouncedScore) {
         return;
       }
 
-      await Api.updateTeam(props.team.id, { score: score });
+      ClientApi.updateTeam(props.team.id, { score: score });
       setDebouncedScore(score);
     },
     1500,
@@ -46,7 +46,7 @@ export default function Team(props: TeamProps) {
           <span className="flex-1">
             <span>{props.team.name}</span>
             <CopyToClipboardButton
-              className="ms-1"
+              className="mx-1"
               value={
                 props.team.name + " team code: " + props.team.code.toUpperCase()
               }
