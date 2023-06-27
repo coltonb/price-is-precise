@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { RouteMiddleware } from "./types";
-import { HTTPError } from "./http-error";
+import { HTTPError } from "@/lib/shared/http-error";
 import { Prisma } from "@prisma/client";
 
 /**
@@ -37,6 +37,9 @@ const prismaErrorHandler: RouteMiddleware = async (next) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         throw new HTTPError("Not Found", 404);
+      }
+      if (error.code === "P2002") {
+        throw new HTTPError("Conflict", 409);
       }
     }
     throw error;

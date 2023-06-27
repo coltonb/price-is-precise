@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import applyMiddleware from "./apply-middleware";
-import { HTTPError } from "./http-error";
+import { HTTPError } from "@/lib/shared/http-error";
 import {
   ApiRouteHandler,
   NextRequestContext,

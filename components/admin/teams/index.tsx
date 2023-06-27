@@ -20,6 +20,10 @@ export default function Teams(props: TeamsProps) {
     ClientApi.deleteTeam(teamToDelete.id);
   };
 
+  const handleCreate = (team: Team) => {
+    setTeams(teams.concat([{ users: [], ...team }]));
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
       {teams.map((team) => {
@@ -27,7 +31,7 @@ export default function Teams(props: TeamsProps) {
           <TeamComponent key={team.id} team={team} onDelete={handleDelete} />
         );
       })}
-      <CreateTeam />
+      <CreateTeam onCreate={handleCreate} />
     </div>
   );
 }

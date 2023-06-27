@@ -40,7 +40,7 @@ export default function Team(props: TeamProps) {
     setScore(z.coerce.number().catch(score).parse(e.target.value));
 
   return (
-    <div className="card card-compact bg-neutral-focus shadow-xl">
+    <div className="card card-compact bg-neutral-focus shadow-xl min-h-[10rem]">
       <div className="card-body">
         <h2 className="card-title">
           <span className="flex-1">

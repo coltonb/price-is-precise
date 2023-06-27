@@ -1,6 +1,14 @@
+import { HTTPError } from "@/lib/shared/http-error";
+
 const REQUEST = async (method: string, url: string, options?: Object) => {
   console.debug(`[${method}]`, url);
-  return fetch(url, Object.assign({ method }, options ?? {}));
+  const response = await fetch(url, Object.assign({ method }, options ?? {}));
+
+  if (response.status >= 400) {
+    throw new HTTPError((await response.json()).detail, response.status);
+  }
+
+  return response;
 };
 const REQUEST_WITH_BODY = async (method: string, url: string, body: any) =>
   REQUEST(method, url, { body: JSON.stringify(body) });
