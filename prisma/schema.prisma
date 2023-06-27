@@ -36,10 +36,10 @@ model Team {
 
 model PriceQuestion {
   id     Int    @id @default(autoincrement())
-  name   String @unique
+  name   String
   price  Float
   points Int[]  @default([3, 2, 1])
-  rank   Int
+  rank   Int    @default(autoincrement())
 
   @@map("price_questions")
 }

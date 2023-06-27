@@ -3,7 +3,7 @@
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import IconButton from "./iconButton";
-import { useDeferredTimeoutFn } from "@/lib/hooks";
+import { useDeferredTimeoutFn } from "@/lib/client/hooks";
 
 interface DeleteButtonProps {
   tooltipText: string;

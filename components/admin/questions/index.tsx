@@ -1,21 +1,14 @@
 "use client";
 
-import DeleteButton from "@/components/deleteButton";
-import IconButton from "@/components/iconButton";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  PencilIcon,
-  PauseCircleIcon,
-} from "@heroicons/react/24/outline";
-import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { PriceQuestion } from "@prisma/client";
-import { useRef, useState } from "react";
-import { ActiveQuestionId } from "@/lib/store";
-import ClientApi from "@/lib/clientApi";
+import { useState } from "react";
+import { ActiveQuestionId } from "@/lib/server/store";
+import ClientApi from "@/lib/client/api";
 import { useDebounce } from "react-use";
-import { useDeferredTimeoutFn } from "@/lib/hooks";
-import QuestionRow from "./questionRow";
+import { useDeferredTimeoutFn } from "@/lib/client/hooks";
+import QuestionRow, { NewQuestion } from "./questionRow";
+import { deepCopy } from "@/lib/utils";
 
 interface QuestionsProps {
   questions: PriceQuestion[];
@@ -23,10 +16,11 @@ interface QuestionsProps {
 }
 
 export default function Questions(props: QuestionsProps) {
-  const [questions, setQuestions] = useState(props.questions);
+  const [questions, setQuestions] = useState(deepCopy(props.questions));
   const [activeQuestionId, setActiveQuestionId] = useState<ActiveQuestionId>(
     props.activeQuestionId
   );
+  const [createMode, setCreateMode] = useState(false);
   const [debouncedActiveQuestionId, setDebouncedActiveQuestionId] =
     useState<ActiveQuestionId>(props.activeQuestionId);
   const [, , persistQuestionRanks] = useDeferredTimeoutFn(() => {
@@ -70,6 +64,11 @@ export default function Questions(props: QuestionsProps) {
     setQuestions(
       questions.filter((question) => question.id !== questionToDelete.id)
     );
+    ClientApi.deleteQuestion(questionToDelete.id);
+
+    if (activeQuestionId === questionToDelete.id) {
+      setActiveQuestionId(null);
+    }
   };
 
   const moveItem = (array: any[], from: number, to: number) => {
@@ -98,47 +97,81 @@ export default function Questions(props: QuestionsProps) {
     };
   };
 
-  const handleSaveQuestion = (question: PriceQuestion) => {
-    console.log(question);
+  const handleSaveQuestion = async (question: PriceQuestion) => {
+    const newQuestions = [...questions];
+    const newQuestion = await ClientApi.updateQuestion(question.id, question);
+    const questionIndex = newQuestions.findIndex(
+      (question) => question.id === newQuestion.id
+    );
+    newQuestions.splice(questionIndex, 1, newQuestion);
+    setQuestions(newQuestions);
+  };
+
+  const handleCreateQuestion = async (question: NewQuestion) => {
+    const newQuestions = [...questions];
+
+    const newQuestion = await ClientApi.createQuestion(question);
+    setCreateMode(false);
+    newQuestions.push(newQuestion);
+    setQuestions(newQuestions);
   };
 
   return (
     <div className="card bg-neutral-focus">
       <div className="card-body">
         <div className="flex card-title">
-          <h1 className="flex-1">Price Questions</h1>
+          <h1 className="flex-1">Questions</h1>
           <button onClick={handleNextQuestion} className="btn btn-sm">
             Next Question
           </button>
         </div>
-        <table className="table table-fixed table-zebra">
-          <thead>
-            <tr>
-              <th />
-              <th>Name</th>
-              <th>Price</th>
-              <th>Points</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {questions.map((question, index) => (
-              <QuestionRow
-                key={question.id}
-                question={question}
-                active={question.id === activeQuestionId}
-                moveUpDisabled={index === 0}
-                moveDownDisabled={index === questions.length - 1}
-                onDeselect={handleDeselectQuestion}
-                onSelect={handleSelectQuestion}
-                onMoveUp={handleMoveUp(index)}
-                onMoveDown={handleMoveDown(index)}
-                onDelete={handleDeleteQuestion}
-                onSave={handleSaveQuestion}
-              />
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="table table-fixed min-w-[32rem] table-zebra">
+            <thead>
+              <tr>
+                <th className="w-[100px]" />
+                <th>Name</th>
+                <th>Price</th>
+                <th>Points</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {questions.map((question, index) => (
+                <QuestionRow
+                  key={question.id}
+                  question={question}
+                  active={question.id === activeQuestionId}
+                  moveUpDisabled={index === 0}
+                  moveDownDisabled={index === questions.length - 1}
+                  onDeselect={handleDeselectQuestion}
+                  onSelect={handleSelectQuestion}
+                  onMoveUp={handleMoveUp(index)}
+                  onMoveDown={handleMoveDown(index)}
+                  onDelete={handleDeleteQuestion}
+                  onSave={handleSaveQuestion}
+                />
+              ))}
+              {createMode ? (
+                <QuestionRow
+                  onCancelCreate={() => setCreateMode(false)}
+                  onCreate={handleCreateQuestion}
+                />
+              ) : (
+                <tr>
+                  <td colSpan={5} className="p-0">
+                    <button
+                      className="btn hover:bg-transparent bg-transparent border-none w-full"
+                      onClick={() => setCreateMode(true)}
+                    >
+                      <PlusIcon className="icon" /> Create New Question
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

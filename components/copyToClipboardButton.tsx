@@ -4,7 +4,7 @@ import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import IconButton from "./iconButton";
-import { useDeferredTimeoutFn } from "@/lib/hooks";
+import { useDeferredTimeoutFn } from "@/lib/client/hooks";
 
 interface CopyToClipboardButtonProps {
   className?: string;

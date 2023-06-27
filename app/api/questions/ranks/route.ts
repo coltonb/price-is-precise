@@ -1,25 +1,28 @@
-import prisma from "@/lib/prisma";
+import createNextRouteHandler from "@/lib/server/api/create-next-route-handler";
+import prisma from "@/lib/server/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import withMiddleware from "@/app/api/middleware";
 
 const postSchema = z.array(z.coerce.number());
 
-export const POST = withMiddleware(async (request: Request) => {
-  const body = postSchema.parse(await request.json());
+export const POST = createNextRouteHandler(
+  async ({ body }) => {
+    await prisma.$transaction(
+      body.map((questionId, index) =>
+        prisma.priceQuestion.updateMany({
+          where: {
+            id: questionId,
+          },
+          data: {
+            rank: index,
+          },
+        })
+      )
+    );
 
-  await prisma.$transaction(
-    body.map((questionId, index) =>
-      prisma.priceQuestion.updateMany({
-        where: {
-          id: questionId,
-        },
-        data: {
-          rank: index,
-        },
-      })
-    )
-  );
+    return new NextResponse(null, { status: 204 });
+  },
+  { bodySchema: postSchema }
+);
 
-  return new NextResponse(null, { status: 204 });
-});
+export type SetQuestionRanksBody = z.infer<typeof postSchema>;

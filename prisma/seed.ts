@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import prisma from "../lib/server/prisma";
 
 async function main() {
   const priceQuestions = [
@@ -9,10 +9,8 @@ async function main() {
 
   await Promise.all(
     priceQuestions.map((question, index) =>
-      prisma.priceQuestion.upsert({
-        where: { name: question.name },
-        update: { rank: index },
-        create: {
+      prisma.priceQuestion.create({
+        data: {
           name: question.name,
           price: question.price,
           rank: index,

@@ -1,28 +1,22 @@
 "use client";
 
-import React, { ComponentType } from "react";
+import React, { ComponentType, ComponentProps, HTMLAttributes } from "react";
 
-interface IconButton {
-  className?: string;
+interface IconButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  iconClassName?: string;
   tooltipText: string;
   icon: ComponentType<{ className?: string }>;
-  onClick: () => any;
-  onMouseEnter?: () => any;
-  onMouseLeave?: () => any;
 }
 
-export default function IconButton(props: IconButton) {
-  const Icon = props.icon;
+export default function IconButton(props: IconButtonProps) {
+  const { iconClassName, tooltipText, icon, ...buttonProps } = props;
+
+  const Icon = icon;
 
   return (
-    <div className="tooltip" data-tip={props.tooltipText}>
-      <button
-        onClick={props.onClick}
-        onMouseEnter={props.onMouseEnter}
-        onMouseLeave={props.onMouseLeave}
-        className={props.className}
-      >
-        <Icon className="icon" />
+    <div className="tooltip" data-tip={tooltipText}>
+      <button {...buttonProps}>
+        <Icon className={"icon " + iconClassName} />
       </button>
     </div>
   );

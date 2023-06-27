@@ -9,7 +9,7 @@ const pathSchema = z.object({
 
 export const DELETE = createNextRouteHandler(
   async ({ path }) => {
-    await prisma.team.deleteMany({ where: { id: path.id } });
+    await prisma.priceQuestion.deleteMany({ where: { id: path.id } });
 
     return new NextResponse(null, { status: 204 });
   },
@@ -17,19 +17,20 @@ export const DELETE = createNextRouteHandler(
 );
 
 const patchSchema = z.object({
-  score: z.coerce.number(),
+  name: z.string().trim(),
+  price: z.coerce.number(),
+  points: z.coerce.number().array(),
 });
 
 export const PATCH = createNextRouteHandler(
   async ({ path, body }) => {
-    const team = await prisma.team.update({
+    const question = await prisma.priceQuestion.update({
       where: { id: path.id },
       data: body,
     });
-
-    return team;
+    return question;
   },
   { pathSchema, bodySchema: patchSchema }
 );
 
-export type UpdateTeamBody = z.infer<typeof patchSchema>;
+export type UpdateQuestionBody = z.infer<typeof patchSchema>;

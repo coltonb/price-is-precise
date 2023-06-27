@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
-import ClientApi from "@/lib/clientApi";
+import ClientApi from "@/lib/client/api";
 import { z } from "zod";
 
 interface TeamProps {
@@ -40,7 +40,7 @@ export default function Team(props: TeamProps) {
     setScore(z.coerce.number().catch(score).parse(e.target.value));
 
   return (
-    <div className="card card-compact bg-neutral-focus min-w-[28rem] shadow-xl">
+    <div className="card card-compact bg-neutral-focus shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
           <span className="flex-1">
