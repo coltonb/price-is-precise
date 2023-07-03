@@ -1,15 +1,14 @@
 import type * as QuestionsIdRoutes from "@/app/api/questions/[id]/route";
-import type * as QuestionsRankRoutes from "@/app/api/questions/ranks/route";
 import type * as QuestionsActiveRoutes from "@/app/api/questions/active/route";
+import type * as QuestionsRankRoutes from "@/app/api/questions/ranks/route";
 import type * as QuestionsRoutes from "@/app/api/questions/route";
 import type * as TeamsIdRoutes from "@/app/api/teams/[id]/route";
 import type * as TeamsRoutes from "@/app/api/teams/route";
-import { PriceQuestion, Team } from "@prisma/client";
-import axios from "axios";
 import {
   NextRouteHandlerBodySchema,
   NextRouteHandlerReturnType,
 } from "@/lib/server/api/create-next-route-handler/types";
+import axios from "axios";
 import urlcat from "urlcat";
 
 const client = axios.create({ baseURL: "/api" });
@@ -27,14 +26,14 @@ export default class ClientApi {
   static async updateTeam(
     teamId: number,
     updates: NextRouteHandlerBodySchema<typeof TeamsIdRoutes.PATCH>
-  ): Promise<Team> {
+  ): Promise<NextRouteHandlerReturnType<typeof TeamsIdRoutes.PATCH>> {
     return (await client.patch(urlcat("/teams/:teamId", { teamId }), updates))
       .data;
   }
 
   static async createTeam(
     team: NextRouteHandlerBodySchema<typeof TeamsRoutes.POST>
-  ): Promise<Team> {
+  ): Promise<NextRouteHandlerReturnType<typeof TeamsRoutes.POST>> {
     return (await client.post("/teams", team)).data;
   }
 
@@ -59,7 +58,7 @@ export default class ClientApi {
   static async updateQuestion(
     questionId: number,
     updates: NextRouteHandlerBodySchema<typeof QuestionsIdRoutes.PATCH>
-  ): Promise<PriceQuestion> {
+  ): Promise<NextRouteHandlerReturnType<typeof QuestionsIdRoutes.PATCH>> {
     return (
       await client.patch(
         urlcat("/questions/:questionId", { questionId }),
@@ -70,7 +69,7 @@ export default class ClientApi {
 
   static async createQuestion(
     question: NextRouteHandlerBodySchema<typeof QuestionsRoutes.POST>
-  ): Promise<PriceQuestion> {
+  ): Promise<NextRouteHandlerReturnType<typeof QuestionsRoutes.POST>> {
     return (await client.post("/questions", question)).data;
   }
 }
