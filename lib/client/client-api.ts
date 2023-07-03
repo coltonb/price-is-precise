@@ -72,4 +72,11 @@ export default class ClientApi {
   ): Promise<NextRouteHandlerReturnType<typeof QuestionsRoutes.POST>> {
     return (await client.post("/questions", question)).data;
   }
+
+  static async getQuestion(
+    questionId: number
+  ): Promise<NextRouteHandlerReturnType<typeof QuestionsIdRoutes.GET>> {
+    return (await client.get(urlcat("/questions/:questionId", { questionId })))
+      .data;
+  }
 }

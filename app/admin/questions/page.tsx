@@ -1,6 +1,6 @@
 import Questions from "@/components/admin/questions";
 import prisma from "@/lib/server/prisma";
-import { getActiveQuestionId } from "@/lib/server/store";
+import { getActiveQuestionId } from "@/lib/server/game-state";
 
 export const dynamic = "force-dynamic";
 

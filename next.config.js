@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ];
   },
+  env: {
+    pusherKey: process.env.PUSHER_KEY,
+    pusherCluster: process.env.PUSHER_CLUSTER,
+  },
 };
 
 module.exports = nextConfig;

@@ -3,7 +3,7 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { PriceQuestion } from "@prisma/client";
 import { useState } from "react";
-import { ActiveQuestionId } from "@/lib/server/store";
+import { ActiveQuestionId } from "@/lib/shared/game-state";
 import ClientApi from "@/lib/client/client-api";
 import { useDebounce } from "react-use";
 import { useDeferredTimeoutFn } from "@/lib/client/hooks";

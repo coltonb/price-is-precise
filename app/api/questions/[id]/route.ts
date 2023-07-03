@@ -7,6 +7,15 @@ const pathSchema = z.object({
   id: z.coerce.number(),
 });
 
+export const GET = createNextRouteHandler(
+  async ({ path }) => {
+    return await prisma.priceQuestion.findUniqueOrThrow({
+      where: { id: path.id },
+    });
+  },
+  { pathSchema }
+);
+
 export const DELETE = createNextRouteHandler(
   async ({ path }) => {
     await prisma.priceQuestion.deleteMany({ where: { id: path.id } });

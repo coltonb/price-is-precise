@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { setActiveQuestionId } from "@/lib/server/store";
+import { setActiveQuestionId } from "@/lib/server/game-state";
 import createNextRouteHandler from "@/lib/server/api/create-next-route-handler";
 
 export const POST = createNextRouteHandler(
