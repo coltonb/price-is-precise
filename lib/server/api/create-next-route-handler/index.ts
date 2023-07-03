@@ -21,7 +21,7 @@ async function safelyParseRequestJson(request: NextRequest) {
 
 function parseRequest<T extends z.ZodType>(
   t: T,
-  o: object | undefined
+  o: unknown | undefined
 ): z.infer<T> {
   try {
     return t.parse(o);

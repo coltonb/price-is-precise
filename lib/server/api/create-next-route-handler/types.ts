@@ -36,7 +36,7 @@ export type ApiRouteHandler<
 ) => Promise<R>;
 
 export interface ErrorResponse {
-  detail: object;
+  detail: unknown;
   status: number;
 }
 
