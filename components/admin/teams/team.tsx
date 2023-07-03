@@ -1,16 +1,16 @@
 "use client";
 
 import { Team, User } from "@prisma/client";
-import { useState } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
-import ClientApi from "@/lib/client/api";
+import ClientApi from "@/lib/client/client-api";
 import { z } from "zod";
 
 interface TeamProps {
   team: Team & { users: User[] };
-  onDelete: (team: Team) => any;
+  onDelete: (team: Team) => unknown;
 }
 
 export default function Team(props: TeamProps) {
@@ -30,13 +30,13 @@ export default function Team(props: TeamProps) {
     [score]
   );
 
-  const handleScoreKeyDown = (e: any) => {
+  const handleScoreKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.target.blur();
+      (e.target as HTMLInputElement).blur();
     }
   };
 
-  const handleScoreChange = (e: any) =>
+  const handleScoreChange = (e: ChangeEvent<HTMLInputElement>) =>
     setScore(z.coerce.number().catch(score).parse(e.target.value));
 
   return (

@@ -1,8 +1,8 @@
 export class HTTPError extends Error {
-  detail: Object;
+  detail: object;
   status: number;
 
-  constructor(detail: Object, status: number) {
+  constructor(detail: object, status: number) {
     super(`[${status}] ${JSON.stringify(detail)}`);
 
     this.detail = detail;

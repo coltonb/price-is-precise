@@ -16,12 +16,6 @@ export const DELETE = createNextRouteHandler(
   { pathSchema }
 );
 
-const patchSchema = z.object({
-  name: z.string().trim(),
-  price: z.coerce.number(),
-  points: z.coerce.number().array(),
-});
-
 export const PATCH = createNextRouteHandler(
   async ({ path, body }) => {
     const question = await prisma.priceQuestion.update({
@@ -30,7 +24,12 @@ export const PATCH = createNextRouteHandler(
     });
     return question;
   },
-  { pathSchema, bodySchema: patchSchema }
+  {
+    pathSchema,
+    bodySchema: z.object({
+      name: z.string().trim(),
+      price: z.coerce.number(),
+      points: z.coerce.number().array(),
+    }),
+  }
 );
-
-export type UpdateQuestionBody = z.infer<typeof patchSchema>;

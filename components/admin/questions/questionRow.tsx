@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { PriceQuestion } from "@prisma/client";
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import CurrencyInput from "react-currency-input-field";
 import QuestionRowPointEditor from "./questionRowPointEditor";
@@ -23,14 +23,14 @@ interface QuestionRowProps {
   active?: boolean;
   moveUpDisabled?: boolean;
   moveDownDisabled?: boolean;
-  onDeselect?: (question: PriceQuestion) => any;
-  onSelect?: (question: PriceQuestion) => any;
-  onMoveUp?: () => any;
-  onMoveDown?: () => any;
-  onDelete?: (question: PriceQuestion) => any;
-  onSave?: (question: PriceQuestion) => any;
-  onCreate?: (question: NewQuestion) => any;
-  onCancelCreate?: () => any;
+  onDeselect?: (question: PriceQuestion) => unknown;
+  onSelect?: (question: PriceQuestion) => unknown;
+  onMoveUp?: () => unknown;
+  onMoveDown?: () => unknown;
+  onDelete?: (question: PriceQuestion) => unknown;
+  onSave?: (question: PriceQuestion) => unknown;
+  onCreate?: (question: NewQuestion) => unknown;
+  onCancelCreate?: () => unknown;
 }
 
 export default function QuestionRow(props: QuestionRowProps) {
@@ -89,7 +89,7 @@ export default function QuestionRow(props: QuestionRowProps) {
     setPrice(value ?? "0");
   };
 
-  const handleNameChange = (e: any) => {
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value ?? "");
   };
 

@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import QuestionRowPointInput from "./questionRowPointInput";
 import { useUpdateEffect } from "react-use";
 
 interface QuestionRowPointEditorProps {
   points: number[];
-  onChange: (points: number[]) => any;
+  onChange: (points: number[]) => unknown;
 }
 
 export default function QuestionRowPointEditor(

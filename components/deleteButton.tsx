@@ -8,7 +8,7 @@ import { useDeferredTimeoutFn } from "@/lib/client/hooks";
 interface DeleteButtonProps {
   tooltipText: string;
   className?: string;
-  onDelete: () => any;
+  onDelete: () => unknown;
 }
 
 export default function DeleteButton(props: DeleteButtonProps) {

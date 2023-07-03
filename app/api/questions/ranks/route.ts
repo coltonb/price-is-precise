@@ -3,8 +3,6 @@ import prisma from "@/lib/server/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const postSchema = z.array(z.coerce.number());
-
 export const POST = createNextRouteHandler(
   async ({ body }) => {
     await prisma.$transaction(
@@ -22,7 +20,5 @@ export const POST = createNextRouteHandler(
 
     return new NextResponse(null, { status: 204 });
   },
-  { bodySchema: postSchema }
+  { bodySchema: z.array(z.coerce.number()) }
 );
-
-export type SetQuestionRanksBody = z.infer<typeof postSchema>;

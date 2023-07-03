@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { z } from "zod";
 
 interface QuestionRowPointInputProps {
   point: number;
-  onChange: (point: number | null) => any;
-  onEnter: () => any;
-  onDelete: () => any;
-  inputRef?: (element: HTMLInputElement | null) => any;
-  onMoveLeft: () => any;
-  onMoveRight: () => any;
+  onChange: (point: number | null) => unknown;
+  onEnter: () => unknown;
+  onDelete: () => unknown;
+  inputRef?: (element: HTMLInputElement | null) => unknown;
+  onMoveLeft: () => unknown;
+  onMoveRight: () => unknown;
 }
 
 export default function QuestionRowPointInput(
@@ -16,8 +16,8 @@ export default function QuestionRowPointInput(
 ) {
   const [point, setPoint] = useState<number | null>(props.point);
 
-  const handleChange = (e: any) => {
-    if (e.target.value === "") {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if ((e.target as HTMLInputElement).value === "") {
       setPoint(null);
       props.onChange(null);
       return;
@@ -26,7 +26,11 @@ export default function QuestionRowPointInput(
     let value: number;
 
     try {
-      value = z.coerce.number().int().nonnegative().parse(e.target.value);
+      value = z.coerce
+        .number()
+        .int()
+        .nonnegative()
+        .parse((e.target as HTMLInputElement).value);
     } catch {
       return;
     }
@@ -35,7 +39,7 @@ export default function QuestionRowPointInput(
     props.onChange(value);
   };
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       props.onEnter();
       return;
@@ -49,14 +53,17 @@ export default function QuestionRowPointInput(
 
     if (
       e.key === "ArrowRight" &&
-      e.target.selectionEnd === String(point ?? "").length
+      (e.target as HTMLInputElement).selectionEnd === String(point ?? "").length
     ) {
       e.preventDefault();
       props.onMoveRight();
       return;
     }
 
-    if (e.key === "ArrowLeft" && e.target.selectionEnd === 0) {
+    if (
+      e.key === "ArrowLeft" &&
+      (e.target as HTMLInputElement).selectionEnd === 0
+    ) {
       e.preventDefault();
       props.onMoveLeft();
       return;

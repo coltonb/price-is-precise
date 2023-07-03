@@ -1,10 +1,10 @@
-import ClientApi from "@/lib/client/api";
-import { HTTPError } from "@/lib/shared/http-error";
+import ClientApi from "@/lib/client/client-api";
 import { Team } from "@prisma/client";
+import { AxiosError } from "axios";
 import { ChangeEvent, useState } from "react";
 
 interface CreateTeamProps {
-  onCreate?: (team: Team) => any;
+  onCreate?: (team: Team) => unknown;
 }
 
 export default function CreateTeam(props: CreateTeamProps) {
@@ -26,7 +26,7 @@ export default function CreateTeam(props: CreateTeamProps) {
       if (props.onCreate) props.onCreate(team);
       setName("");
     } catch (error) {
-      if (error instanceof HTTPError && error.status === 409) {
+      if (error instanceof AxiosError && error.response?.status === 409) {
         setShowError(true);
         return;
       }
@@ -39,12 +39,28 @@ export default function CreateTeam(props: CreateTeamProps) {
     <div className="card card-compact bg-base-200 shadow-xl min-h-[10rem]">
       <div className="card-body items-center justify-center">
         <div className="card-actions">
-          <input
-            className={"input transition  " + (showError ? "input-error" : "")}
-            placeholder="Team Name"
-            value={name}
-            onChange={handleChange}
-          />
+          <div className="relative form-control">
+            <label className="bottom-12 absolute label" htmlFor="team-name">
+              Team Name
+            </label>
+            <input
+              className={
+                "input transition  " + (showError ? "input-error" : "")
+              }
+              value={name}
+              onChange={handleChange}
+              id="team-name"
+            />
+            <label
+              className={
+                "top-12 transition-opacity text-error absolute label " +
+                (showError ? "opacity-1" : "opacity-0 invisible")
+              }
+              htmlFor="team-name"
+            >
+              Name is already taken.
+            </label>
+          </div>
           <button
             className="btn btn-primary"
             disabled={name.length === 0 || creating}

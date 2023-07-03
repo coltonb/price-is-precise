@@ -4,7 +4,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { PriceQuestion } from "@prisma/client";
 import { useState } from "react";
 import { ActiveQuestionId } from "@/lib/server/store";
-import ClientApi from "@/lib/client/api";
+import ClientApi from "@/lib/client/client-api";
 import { useDebounce } from "react-use";
 import { useDeferredTimeoutFn } from "@/lib/client/hooks";
 import QuestionRow, { NewQuestion } from "./questionRow";
@@ -71,7 +71,7 @@ export default function Questions(props: QuestionsProps) {
     }
   };
 
-  const moveItem = (array: any[], from: number, to: number) => {
+  const moveItem = (array: unknown[], from: number, to: number) => {
     array.splice(to, 0, array.splice(from, 1)[0]);
   };
 

@@ -16,10 +16,6 @@ export const DELETE = createNextRouteHandler(
   { pathSchema }
 );
 
-const patchSchema = z.object({
-  score: z.coerce.number(),
-});
-
 export const PATCH = createNextRouteHandler(
   async ({ path, body }) => {
     const team = await prisma.team.update({
@@ -29,7 +25,10 @@ export const PATCH = createNextRouteHandler(
 
     return team;
   },
-  { pathSchema, bodySchema: patchSchema }
+  {
+    pathSchema,
+    bodySchema: z.object({
+      score: z.coerce.number(),
+    }),
+  }
 );
-
-export type UpdateTeamBody = z.infer<typeof patchSchema>;

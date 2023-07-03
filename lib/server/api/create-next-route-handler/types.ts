@@ -36,9 +36,35 @@ export type ApiRouteHandler<
 ) => Promise<R>;
 
 export interface ErrorResponse {
-  detail: Object;
+  detail: object;
   status: number;
 }
+
+interface RouteHandlerMeta<
+  P extends OptionalZodType,
+  B extends OptionalZodType
+> {
+  _path: P;
+  _body: B;
+}
+
+export type RouteHandler<
+  P extends OptionalZodType = undefined,
+  B extends OptionalZodType = undefined,
+  R = unknown
+> = ((
+  request: NextRequest,
+  context: NextRequestContext
+) => Promise<NextResponse | (R extends NextResponse ? R : NextResponse<R>)>) &
+  RouteHandlerMeta<P, B>;
+
+export type NextRouteHandlerPathSchema<
+  T extends RouteHandlerMeta<OptionalZodType, OptionalZodType>
+> = InferOptionalZodType<T["_path"]>;
+
+export type NextRouteHandlerBodySchema<
+  T extends RouteHandlerMeta<OptionalZodType, OptionalZodType>
+> = InferOptionalZodType<T["_body"]>;
 
 export type NextRouteHandlerReturnType<T> = T extends (
   ...args: any[]

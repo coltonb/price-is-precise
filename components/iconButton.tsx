@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ComponentType, ComponentProps, HTMLAttributes } from "react";
+import React, { ComponentType, HTMLAttributes } from "react";
 
 interface IconButtonProps extends HTMLAttributes<HTMLButtonElement> {
   iconClassName?: string;

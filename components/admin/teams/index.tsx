@@ -3,8 +3,7 @@
 import TeamComponent from "@/components/admin/teams/team";
 import { Team, User } from "@prisma/client";
 import { useState } from "react";
-import ClientApi from "@/lib/client/api";
-import { SquaresPlusIcon } from "@heroicons/react/24/outline";
+import ClientApi from "@/lib/client/client-api";
 import { deepCopy } from "@/lib/utils";
 import CreateTeam from "./createTeam";
 

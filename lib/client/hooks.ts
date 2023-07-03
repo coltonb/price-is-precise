@@ -7,7 +7,7 @@ import type { UseTimeoutFnReturn } from "react-use/lib/useTimeoutFn";
  * which executes only after the reset function is explicitly called.
  */
 export function useDeferredTimeoutFn(
-  fn: Function,
+  fn: () => void,
   ms?: number
 ): UseTimeoutFnReturn {
   const started = useRef(false);

@@ -7,6 +7,7 @@ import {
   NextRequestContext,
   OptionalZodType,
   Request,
+  RouteHandler,
   RouteMiddleware,
 } from "./types";
 
@@ -20,7 +21,7 @@ async function safelyParseRequestJson(request: NextRequest) {
 
 function parseRequest<T extends z.ZodType>(
   t: T,
-  o: Object | undefined
+  o: object | undefined
 ): z.infer<T> {
   try {
     return t.parse(o);
@@ -80,12 +81,14 @@ export default function createNextRouteHandler<
     bodySchema?: B;
     middleware?: RouteMiddleware[];
   }
-): (
-  request: NextRequest,
-  context: NextRequestContext
-) => Promise<NextResponse | (R extends NextResponse ? R : NextResponse<R>)> {
-  return applyMiddleware(
+): RouteHandler<P, B, R> {
+  const handler = applyMiddleware(
     createRouteHandler(routeHandler, options),
     options?.middleware
-  );
+  ) as RouteHandler<P, B, R>;
+
+  handler._path = options?.pathSchema as P;
+  handler._body = options?.bodySchema as B;
+
+  return handler;
 }
