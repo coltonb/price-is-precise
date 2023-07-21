@@ -1,1 +1,3 @@
-export type ActiveQuestionId = number | null;
+export default interface GameState {
+  activeQuestionId: number | null;
+}

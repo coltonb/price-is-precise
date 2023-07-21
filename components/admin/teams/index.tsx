@@ -3,7 +3,7 @@
 import TeamComponent from "@/components/admin/teams/team";
 import { Team, User } from "@prisma/client";
 import { useState } from "react";
-import ClientApi from "@/lib/client/client-api";
+import * as ClientApi from "@/lib/client/client-api";
 import { deepCopy } from "@/lib/utils";
 import CreateTeam from "./createTeam";
 
@@ -16,7 +16,7 @@ export default function Teams(props: TeamsProps) {
 
   const handleDelete = (teamToDelete: Team) => {
     setTeams(teams.filter((team) => team.id !== teamToDelete.id));
-    ClientApi.deleteTeam(teamToDelete.id);
+    ClientApi.deleteTeam({ path: { id: teamToDelete.id } });
   };
 
   const handleCreate = (team: Team) => {

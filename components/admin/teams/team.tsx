@@ -5,7 +5,7 @@ import { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useDebounce } from "react-use";
 import DeleteButton from "@/components/deleteButton";
 import CopyToClipboardButton from "@/components/copyToClipboardButton";
-import ClientApi from "@/lib/client/client-api";
+import * as ClientApi from "@/lib/client/client-api";
 import { z } from "zod";
 
 interface TeamProps {
@@ -23,7 +23,10 @@ export default function Team(props: TeamProps) {
         return;
       }
 
-      ClientApi.updateTeam(props.team.id, { score: score });
+      ClientApi.updateTeam({
+        path: { id: props.team.id },
+        body: { score: score },
+      });
       setDebouncedScore(score);
     },
     1500,

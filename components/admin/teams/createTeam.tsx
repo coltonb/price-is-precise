@@ -1,4 +1,4 @@
-import ClientApi from "@/lib/client/client-api";
+import * as ClientApi from "@/lib/client/client-api";
 import { Team } from "@prisma/client";
 import { AxiosError } from "axios";
 import { ChangeEvent, useState } from "react";
@@ -22,7 +22,7 @@ export default function CreateTeam(props: CreateTeamProps) {
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const team = await ClientApi.createTeam({ name });
+      const team = await ClientApi.createTeam({ body: { name } });
       if (props.onCreate) props.onCreate(team);
       setName("");
     } catch (error) {

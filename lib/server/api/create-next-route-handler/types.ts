@@ -35,11 +35,6 @@ export type ApiRouteHandler<
   } & Request<P, B>
 ) => Promise<R>;
 
-export interface ErrorResponse {
-  detail: unknown;
-  status: number;
-}
-
 interface RouteHandlerMeta<
   P extends OptionalZodType,
   B extends OptionalZodType

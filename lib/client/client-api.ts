@@ -6,9 +6,11 @@ import type * as TeamsIdRoutes from "@/app/api/teams/[id]/route";
 import type * as TeamsRoutes from "@/app/api/teams/route";
 import {
   NextRouteHandlerBodySchema,
+  NextRouteHandlerPathSchema,
   NextRouteHandlerReturnType,
+  RouteHandler,
 } from "@/lib/server/api/create-next-route-handler/types";
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
 import urlcat from "urlcat";
 
 const client = axios.create({ baseURL: "/api" });
@@ -18,65 +20,76 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
-export default class ClientApi {
-  static async deleteTeam(teamId: number) {
-    await client.delete(urlcat("/teams/:teamId", { teamId }));
-  }
+function createApiCall<T>(
+  method: (...args: any[]) => AxiosPromise,
+  url: string
+) {
+  type Path = T extends RouteHandler<infer P, infer B, infer R>
+    ? NextRouteHandlerPathSchema<T>
+    : unknown;
+  type Body = T extends RouteHandler<infer P, infer B, infer R>
+    ? NextRouteHandlerBodySchema<T>
+    : unknown;
+  type Return = T extends RouteHandler<infer P, infer B, infer R>
+    ? NextRouteHandlerReturnType<T>
+    : unknown;
 
-  static async updateTeam(
-    teamId: number,
-    updates: NextRouteHandlerBodySchema<typeof TeamsIdRoutes.PATCH>
-  ): Promise<NextRouteHandlerReturnType<typeof TeamsIdRoutes.PATCH>> {
-    return (await client.patch(urlcat("/teams/:teamId", { teamId }), updates))
-      .data;
-  }
+  type PathOptions = Path extends undefined ? { path?: Path } : { path: Path };
+  type BodyOptions = Body extends undefined ? { body?: Body } : { body: Body };
 
-  static async createTeam(
-    team: NextRouteHandlerBodySchema<typeof TeamsRoutes.POST>
-  ): Promise<NextRouteHandlerReturnType<typeof TeamsRoutes.POST>> {
-    return (await client.post("/teams", team)).data;
-  }
+  return async (options: PathOptions & BodyOptions): Promise<Return> => {
+    if (options.path) {
+      url = urlcat(url, options.path);
+    }
 
-  static async setActiveQuestionId(
-    activeQuestionId: NextRouteHandlerBodySchema<
-      typeof QuestionsActiveRoutes.POST
-    >["id"]
-  ) {
-    await client.post("/questions/active", { id: activeQuestionId });
-  }
-
-  static async setQuestionRanks(
-    questionIds: NextRouteHandlerBodySchema<typeof QuestionsRankRoutes.POST>
-  ) {
-    await client.post("/questions/ranks", questionIds);
-  }
-
-  static async deleteQuestion(questionId: number) {
-    await client.delete(urlcat("/questions/:questionId", { questionId }));
-  }
-
-  static async updateQuestion(
-    questionId: number,
-    updates: NextRouteHandlerBodySchema<typeof QuestionsIdRoutes.PATCH>
-  ): Promise<NextRouteHandlerReturnType<typeof QuestionsIdRoutes.PATCH>> {
-    return (
-      await client.patch(
-        urlcat("/questions/:questionId", { questionId }),
-        updates
-      )
-    ).data;
-  }
-
-  static async createQuestion(
-    question: NextRouteHandlerBodySchema<typeof QuestionsRoutes.POST>
-  ): Promise<NextRouteHandlerReturnType<typeof QuestionsRoutes.POST>> {
-    return (await client.post("/questions", question)).data;
-  }
-
-  static async getQuestion(
-    questionId: number
-  ): Promise<NextRouteHandlerReturnType<typeof QuestionsIdRoutes.GET>> {
-    return (await client.get(urlcat("/questions/:questionId", { questionId })))
-      .data;
-  }
+    if (options.body) {
+      return (await method(url, options.body)).data;
+    } else {
+      return (await method(url)).data;
+    }
+  };
 }
+
+export const deleteTeam = createApiCall<typeof TeamsIdRoutes.DELETE>(
+  client.delete,
+  "/teams/:id"
+);
+
+export const updateTeam = createApiCall<typeof TeamsIdRoutes.PATCH>(
+  client.patch,
+  "/teams/:id"
+);
+
+export const createTeam = createApiCall<typeof TeamsRoutes.POST>(
+  client.post,
+  "/teams"
+);
+
+export const setActiveQuestionId = createApiCall<
+  typeof QuestionsActiveRoutes.POST
+>(client.post, "/questions/active");
+
+export const setQuestionRanks = createApiCall<typeof QuestionsRankRoutes.POST>(
+  client.post,
+  "/questions/ranks"
+);
+
+export const deleteQuestion = createApiCall<typeof QuestionsIdRoutes.DELETE>(
+  client.delete,
+  "/questions/:id"
+);
+
+export const updateQuestion = createApiCall<typeof QuestionsIdRoutes.PATCH>(
+  client.patch,
+  "/questions/:id"
+);
+
+export const createQuestion = createApiCall<typeof QuestionsRoutes.POST>(
+  client.post,
+  "/questions"
+);
+
+export const getQuestion = createApiCall<typeof QuestionsIdRoutes.GET>(
+  client.get,
+  "/quesitons/:id"
+);

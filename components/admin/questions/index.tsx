@@ -3,28 +3,31 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { PriceQuestion } from "@prisma/client";
 import { useState } from "react";
-import { ActiveQuestionId } from "@/lib/shared/game-state";
-import ClientApi from "@/lib/client/client-api";
+import * as ClientApi from "@/lib/client/client-api";
 import { useDebounce } from "react-use";
 import { useDeferredTimeoutFn } from "@/lib/client/hooks";
 import QuestionRow, { NewQuestion } from "./questionRow";
 import { deepCopy } from "@/lib/utils";
+import GameState from "@/lib/shared/game-state";
 
 interface QuestionsProps {
   questions: PriceQuestion[];
-  activeQuestionId: ActiveQuestionId;
+  activeQuestionId: GameState["activeQuestionId"];
 }
 
 export default function Questions(props: QuestionsProps) {
   const [questions, setQuestions] = useState(deepCopy(props.questions));
-  const [activeQuestionId, setActiveQuestionId] = useState<ActiveQuestionId>(
-    props.activeQuestionId
-  );
+  const [activeQuestionId, setActiveQuestionId] = useState<
+    GameState["activeQuestionId"]
+  >(props.activeQuestionId);
   const [createMode, setCreateMode] = useState(false);
-  const [debouncedActiveQuestionId, setDebouncedActiveQuestionId] =
-    useState<ActiveQuestionId>(props.activeQuestionId);
+  const [debouncedActiveQuestionId, setDebouncedActiveQuestionId] = useState<
+    GameState["activeQuestionId"]
+  >(props.activeQuestionId);
   const [, , persistQuestionRanks] = useDeferredTimeoutFn(() => {
-    ClientApi.setQuestionRanks(questions.map((question) => question.id));
+    ClientApi.setQuestionRanks({
+      body: questions.map((question) => question.id),
+    });
   }, 2000);
 
   useDebounce(
@@ -34,7 +37,7 @@ export default function Questions(props: QuestionsProps) {
       }
 
       setDebouncedActiveQuestionId(activeQuestionId);
-      ClientApi.setActiveQuestionId(activeQuestionId);
+      setActiveQuestionId(activeQuestionId);
     },
     500,
     [activeQuestionId]
@@ -64,7 +67,7 @@ export default function Questions(props: QuestionsProps) {
     setQuestions(
       questions.filter((question) => question.id !== questionToDelete.id)
     );
-    ClientApi.deleteQuestion(questionToDelete.id);
+    ClientApi.deleteQuestion({ path: { id: questionToDelete.id } });
 
     if (activeQuestionId === questionToDelete.id) {
       setActiveQuestionId(null);
@@ -99,7 +102,10 @@ export default function Questions(props: QuestionsProps) {
 
   const handleSaveQuestion = async (question: PriceQuestion) => {
     const newQuestions = [...questions];
-    const newQuestion = await ClientApi.updateQuestion(question.id, question);
+    const newQuestion = await ClientApi.updateQuestion({
+      path: { id: question.id },
+      body: question,
+    });
     const questionIndex = newQuestions.findIndex(
       (question) => question.id === newQuestion.id
     );
@@ -110,7 +116,7 @@ export default function Questions(props: QuestionsProps) {
   const handleCreateQuestion = async (question: NewQuestion) => {
     const newQuestions = [...questions];
 
-    const newQuestion = await ClientApi.createQuestion(question);
+    const newQuestion = await ClientApi.createQuestion({ body: question });
     setCreateMode(false);
     newQuestions.push(newQuestion);
     setQuestions(newQuestions);
